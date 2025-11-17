@@ -1,0 +1,99 @@
+# Configuration for context-aware recommendation system
+defaults:
+  - _self_
+
+# Data configuration
+data:
+  raw_data_path: "data/raw"
+  processed_data_path: "data/processed"
+  interactions_file: "interactions.csv"
+  items_file: "items.csv"
+  users_file: "users.csv"
+  
+  # Context features
+  context_features:
+    - time_of_day
+    - day_of_week
+    - season
+    - weather
+    - device_type
+    - location_type
+  
+  # Data generation parameters
+  n_users: 1000
+  n_items: 500
+  n_interactions: 10000
+  min_interactions_per_user: 5
+  max_interactions_per_user: 50
+
+# Model configuration
+models:
+  # Baseline models
+  popularity:
+    enabled: true
+    
+  user_knn:
+    enabled: true
+    k: 50
+    min_support: 5
+    
+  item_knn:
+    enabled: true
+    k: 50
+    min_support: 5
+  
+  # Matrix factorization
+  als:
+    enabled: true
+    factors: 50
+    regularization: 0.01
+    iterations: 15
+    
+  # Context-aware models
+  lightfm:
+    enabled: true
+    no_components: 50
+    learning_rate: 0.05
+    loss: "warp"
+    item_alpha: 0.0
+    user_alpha: 0.0
+    
+  # Content-based
+  content_based:
+    enabled: true
+    use_text_features: true
+    use_categorical_features: true
+    tfidf_max_features: 1000
+    similarity_metric: "cosine"
+
+# Evaluation configuration
+evaluation:
+  test_size: 0.2
+  val_size: 0.1
+  random_state: 42
+  metrics:
+    - precision_at_k
+    - recall_at_k
+    - map_at_k
+    - ndcg_at_k
+    - hit_rate_at_k
+    - coverage
+    - diversity
+    - novelty
+  
+  k_values: [5, 10, 20]
+  
+# Training configuration
+training:
+  random_state: 42
+  n_jobs: -1
+  verbose: true
+  
+# Demo configuration
+demo:
+  streamlit:
+    port: 8501
+    host: "localhost"
+  gradio:
+    port: 7860
+    share: false
